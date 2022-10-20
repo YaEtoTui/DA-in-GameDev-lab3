@@ -56,8 +56,7 @@
 ![Снимок экрана (680)](https://user-images.githubusercontent.com/102538132/197033039-eddd6635-53bd-4771-a60f-b3d3dfc29d0f.png)
 ![Снимок экрана (681)](https://user-images.githubusercontent.com/102538132/197033064-0dc29175-4a17-453a-bb08-93ed213ba89f.png)
 
-27 объектов
-На последнем скрине переменная Std of Reward не видно, ее значение = 0.252
+27 объектов. На последнем скрине переменная Std of Reward не видно, ее значение = 0.252
 
 ![Снимок экрана (682)](https://user-images.githubusercontent.com/102538132/197033112-e6adfeaf-5df8-46a5-b780-73de16c7d5c3.png)
 ![Снимок экрана (683)](https://user-images.githubusercontent.com/102538132/197033132-af89474e-974d-4911-b7dc-400a3ca214e0.png)
@@ -68,13 +67,42 @@
 ![Снимок экрана (684)](https://user-images.githubusercontent.com/102538132/197033324-2febd4de-26be-4189-8be8-f1b24b69eddd.png)
 ![Снимок экрана (685)](https://user-images.githubusercontent.com/102538132/197033338-e51aad29-af01-4894-843b-f40091a3c2ae.png)
 
+Все результаты можно увидеть на скринах выше.
 
-Вывод: С увеличением количества объектов количество шагов(step) увеличивается. Потраченное время(time elapsed) тоже увеличивается, но сравнивая 9 и 27 объектов, наоборот, уменьшается. Переменная Std of Reward уменьшается 
+Вывод: С увеличением количества объектов количество шагов(step) увеличивается. Потраченное время(time elapsed) тоже увеличивается, но сравнивая 9 и 27 объектов, наоборот, уменьшается. Переменная Std of Reward уменьшается и Mean Reward увеличивается.
 
 
 ## Задание 2
-### Реализовать запись в Google-таблицу набора данных, полученных с помощью линейной регрессии из лабораторной работы № 1
+### Подробно опишите каждую строку файла конфигурации нейронной сети, доступного в папке с файлами проекта по ссылке. Самостоятельно найдите информацию о компонентах Decision Requester, Behavior Parameters, добавленных на сфере.
+ 
 
+```py
+
+behaviors: # Первая строка behaviors отвечает за поведение объекта.
+  RollerBall: # Дальше мы описываем объект RollerBall
+    trainer_type: ppo # Выбираем тип тренера
+    hyperparameters: # Перечисляем его гиперпараметры
+      batch_size: 10 # Его размер партии
+      buffer_size: 100 # Размер буффера
+      learning_rate: 3.0e-4 # Скорость обучения объекта
+      beta: 5.0e-4 # Его бета
+      epsilon: 0.2 # Эпсилон
+      lambd: 0.99 # Лямбда
+      num_epoch: 3 # Номер эпохи
+      learning_rate_schedule: linear # График скорости обучения: линейный
+    network_settings:
+      normalize: false
+      hidden_units: 128
+      num_layers: 2
+    reward_signals:
+      extrinsic:
+        gamma: 0.99
+        strength: 1.0
+    max_steps: 500000
+    time_horizon: 64
+    summary_freq: 10000
+
+```
 
 
 ## Задание 3
