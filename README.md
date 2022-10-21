@@ -160,19 +160,19 @@ public class RollerAgent : Agent
         sensor.AddObservation(rBody.velocity.z);
     }
     public float forceMultiplier = 5;
+    private float distanceToTarget;
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
         Vector3 controlSignal = Vector3.zero;
         controlSignal.x = actionBuffers.ContinuousActions[0];
         controlSignal.z = actionBuffers.ContinuousActions[1];
         rBody.AddForce(controlSignal * forceMultiplier);
-        float distanceToTarget = 0f;
         if (isTrue == true)
         {
             isTrue = false;
             distanceToTarget = Vector3.Distance(this.transform.localPosition, Target1.localPosition);
         }
-        if (isTrue == false)
+        else
         {
             isTrue = true;
             distanceToTarget = Vector3.Distance(this.transform.localPosition, Target2.localPosition);
