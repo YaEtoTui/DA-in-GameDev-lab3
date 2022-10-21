@@ -167,7 +167,7 @@ public class RollerAgent : Agent
         controlSignal.z = actionBuffers.ContinuousActions[1];
         rBody.AddForce(controlSignal * forceMultiplier);
         float distanceToTarget = 0f;
-        if (transform.position != Target1.transform.position & isTrue == true)
+        if (isTrue == true)
         {
             isTrue = false;
             distanceToTarget = Vector3.Distance(this.transform.localPosition, Target1.localPosition);
