@@ -153,14 +153,13 @@ public class RollerAgent : Agent
         Target2.localPosition = new Vector3(Random.value * 8-4, 0.5f, Random.value * 8-4);   
     }
     public override void CollectObservations(VectorSensor sensor)
-    {
-        sensor.AddObservation(Target1.localPosition);        
+    {       
+        sensor.AddObservation(Target1.localPosition);
         sensor.AddObservation(this.transform.localPosition);
         sensor.AddObservation(rBody.velocity.x);
         sensor.AddObservation(rBody.velocity.z);
     }
-    public float forceMultiplier = 5;
-    private float distanceToTarget;
+    public float forceMultiplier = 10;
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
         speedMove = Mathf.Clamp(actionBuffers.ContinuousActions[0], 1f, 10f);
@@ -168,16 +167,26 @@ public class RollerAgent : Agent
         controlSignal.x = actionBuffers.ContinuousActions[0];
         controlSignal.z = actionBuffers.ContinuousActions[1];
         rBody.AddForce(controlSignal * forceMultiplier);
-        if (isTrue == true)
+        if (transform.position != Target1.transform.position & isTrue == true)
         {
             transform.position = Vector3.MoveTowards(transform.position, Target1.transform.position, Time.deltaTime * speedMove);
+        }
+
+        if (transform.position == Target1.transform.position & isTrue == true)
+        {
             isTrue = false;
         }
-        if (isTrue == false)
+
+        if (transform.position != Target2.transform.position & isTrue == false)
         {
             transform.position = Vector3.MoveTowards(transform.position, Target2.transform.position, Time.deltaTime * speedMove);
+        }
+
+        if (transform.position == Target2.transform.position & isTrue == false)
+        {
             isTrue = true;
-        }             
+        }
+
         if (this.transform.localPosition.y < 0)
         {
             EndEpisode();
