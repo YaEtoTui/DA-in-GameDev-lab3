@@ -133,12 +133,13 @@ public class RollerAgent : Agent
     // Start is called before the first frame update
     void Start()
     {
-        isTrue = true;
+        
         rBody = GetComponent<Rigidbody>();
     }
 
     public Transform Target1;
     public Transform Target2;
+    private float speedMove;
     private bool isTrue = true;
     public override void OnEpisodeBegin()
     {
@@ -149,12 +150,11 @@ public class RollerAgent : Agent
             this.transform.localPosition = new Vector3(0, 0.5f, 0);
         }
         Target1.localPosition = new Vector3(Random.value * 8-4, 0.5f, Random.value * 8-4);
-        Target2.localPosition = new Vector3(Random.value * 8-4, 0.5f, Random.value * 8-4);
+        Target2.localPosition = new Vector3(Random.value * 8-4, 0.5f, Random.value * 8-4);   
     }
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(Target1.localPosition);
-        sensor.AddObservation(Target2.localPosition);
+        sensor.AddObservation(Target1.localPosition);        
         sensor.AddObservation(this.transform.localPosition);
         sensor.AddObservation(rBody.velocity.x);
         sensor.AddObservation(rBody.velocity.z);
@@ -163,28 +163,22 @@ public class RollerAgent : Agent
     private float distanceToTarget;
     public override void OnActionReceived(ActionBuffers actionBuffers)
     {
+        speedMove = Mathf.Clamp(actionBuffers.ContinuousActions[0], 1f, 10f);
         Vector3 controlSignal = Vector3.zero;
         controlSignal.x = actionBuffers.ContinuousActions[0];
         controlSignal.z = actionBuffers.ContinuousActions[1];
         rBody.AddForce(controlSignal * forceMultiplier);
         if (isTrue == true)
         {
+            transform.position = Vector3.MoveTowards(transform.position, Target1.transform.position, Time.deltaTime * speedMove);
             isTrue = false;
-            distanceToTarget = Vector3.Distance(this.transform.localPosition, Target1.localPosition);
         }
-        else
+        if (isTrue == false)
         {
+            transform.position = Vector3.MoveTowards(transform.position, Target2.transform.position, Time.deltaTime * speedMove);
             isTrue = true;
-            distanceToTarget = Vector3.Distance(this.transform.localPosition, Target2.localPosition);
-        }
-
-        
-        if(distanceToTarget < 1.42f)
-        {
-            SetReward(1.0f);
-            EndEpisode();
-        }
-        else if (this.transform.localPosition.y < 0)
+        }             
+        if (this.transform.localPosition.y < 0)
         {
             EndEpisode();
         }
